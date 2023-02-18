@@ -1,4 +1,3 @@
-
 import numpy as np
 import torch
 from torchvision import transforms
@@ -16,8 +15,7 @@ NUM_WORKERS=0
 PIN_MEMORY=True    
 
 
-
-transform_1 =  transforms.Compose([transforms.ToTensor()])
+transform = transforms.ToTensor()
 
 def read_xray(path, voi_lut = True, fix_monochrome = True):
     dicom = pydicom.read_file(path)
@@ -29,12 +27,12 @@ def read_xray(path, voi_lut = True, fix_monochrome = True):
         data = dicom.pixel_array
                
     # depending on this value, MRI may look inverted - fix that:
-    if fix_monochrome and dicom.PhotometricInterpretation == "MONOCHROME2":
-        data = np.amax(data) - data
+    #if fix_monochrome and dicom.PhotometricInterpretation == "MONOCHROME2":
+    #    data = np.amax(data) - data
         
     data = data - np.min(data)
     data = data / np.max(data)
-    data = (data * 255).astype(np.uint8)
+    #data = (data * 255)#.astype(np.uint8)
         
     return data
 
@@ -43,8 +41,7 @@ def read_xray(path, voi_lut = True, fix_monochrome = True):
 class Dataset_(Dataset):
     def __init__(self, image_dir,transform=None):
         self.image_dir = image_dir
-       # self.genes=path_genes_data
-        self.images = list(image_dir.glob("*/*/*/*.dcm"))
+        self.images = list(image_dir.glob("*/*/*/*.dcm"))    
         self.transform = transform
 
     def __len__(self):
@@ -53,31 +50,33 @@ class Dataset_(Dataset):
     def __getitem__(self, index):
         ## reading image ###
         img_path = os.path.join(self.image_dir, self.images[index])
-        image = read_xray(img_path)
+        image = read_xray(img_path)       
         #plt.figure(figsize = (12,12))
         #plt.imshow(image, 'gray')
         image_name=self.images[index]
+        #print(image_name)
         if self.transform is not None:
-            a = self.transform(image=image)
-            image = a['image']
-            #image=np.transpose(image, (2, 0, 1))
+            a = self.transform(image)
+            print(a.shape)
+
             
-        return image,self.images[index]
+        return image
 
 
 
  
 def Data_Loader( test_dir,batch_size,num_workers=NUM_WORKERS,pin_memory=PIN_MEMORY):
     
-    load_data = Dataset_( image_dir=test_dir,transform=transform_1)
+    load_data = Dataset_( image_dir=test_dir,transform=transform)
 
     data_loader = DataLoader(load_data,batch_size=batch_size,num_workers=num_workers,pin_memory=pin_memory,shuffle=True)
     
     return data_loader
 
 
-data_path = Path(r"E:\IAAA_CMMD\manifest-1616439774456")
+data_path = Path(r"D:\IAAA_CMMD\manifest-1616439774456")
 images_folder = data_path / "CMMD"
 loader=Data_Loader(images_folder,4)
 a=iter(loader)
 a1=next(a)
+imge = a1[0].numpy()
