@@ -3,7 +3,7 @@
 import glob
 import os
 import pandas as pd
-
+import shutil
 import SimpleITK as sitk
 import numpy as np
 df = pd.read_excel(os.path.join(os.getcwd(),
@@ -42,11 +42,11 @@ print(f'Nr. rows in train set: {unique_df.shape[0]}')
 print(unique_df.classification.value_counts())
 
 
-df1 = pd.read_csv(r"E:/IAAA_CMMD/cmmd_with_id.csv")
-df2 = pd.read_csv(r'E:/IAAA_CMMD/manifest-1616439774456/CMMD_clinicaldata.csv')
+# df1 = pd.read_csv(r"E:/IAAA_CMMD/cmmd_with_id.csv")
+# df2 = pd.read_csv(r'E:/IAAA_CMMD/manifest-1616439774456/CMMD_clinicaldata.csv')
 
-new = pd.merge(df1, unique_df, how="inner", on=["ID1"])
-new.to_csv(r"E:/IAAA_CMMD/manifest-1616439774456/combine_clincal.csv")
+# new = pd.merge(df1, unique_df, how="inner", on=["ID1"])
+# new.to_csv(r"E:/IAAA_CMMD/manifest-1616439774456/combine_clincal.csv")
 
 df3 = pd.read_csv(r"E:/IAAA_CMMD/manifest-1616439774456/combine_clincal.csv")
 df3.columns
@@ -56,3 +56,33 @@ Malignant_ = df3.loc[df3['classification'] == 'Malignant', 'Number of Images'].s
 
 print(f'Nr. of Benign MRI (per-patient) in all dataset: {bening_}')
 print(f'Nr. of Malignant MRI (per-patient) in all dataset: {Malignant_}')
+
+
+
+
+# count duplicate IDs
+duplicated_ids = df3[df3.duplicated(subset=['ID1'], keep=False)]['ID1'].value_counts()
+df4 = (duplicated_ids[duplicated_ids > 1])
+df4 = df4.to_frame()
+
+
+#df5 =df3.loc[df3['ID1']==df4.index]
+
+# print the duplicated IDs that appear more than once
+print(duplicated_ids[duplicated_ids > 1])
+
+# move folders that has two classifications for the same id
+
+PATCHES_PATH = r"E:\IAAA_CMMD\manifest-1616439774456\CMMD" # image folder 
+
+IMG_DIR=os.listdir(PATCHES_PATH) 
+
+Dist_PATH=r"E:/IAAA_CMMD/manifest-1616439774456/dif_classifcation" 
+
+#Training Split
+for file in df4.index:
+    for name in IMG_DIR:
+        if name.startswith(file):
+            sourc = os.path.join(PATCHES_PATH,name )
+            distination = os.path.join(Dist_PATH, name)
+            shutil.move(sourc, distination)
