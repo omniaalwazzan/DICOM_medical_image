@@ -183,6 +183,7 @@ class Dataset_(Dataset):
     def __getitem__(self, index):
         ## reading image ###
         ID = self.ID
+        LABEL = self.LABEL
         img_path1 = self.path1+ ID[index]
         img_path2 = img_path1 + '/'+ next(os.walk(img_path1))[1][0]
         img_path3 = img_path2 + '/'+ next(os.walk(img_path2))[1][0]
@@ -191,7 +192,7 @@ class Dataset_(Dataset):
         
         if len(img_names) ==2:
             for i in range(len(img_names)):
-                img_path =  img_path3 + '/' + img_names[index]
+                img_path =  img_path3 + '/' + img_names[i]
                 img = sitk.ReadImage(img_path)
                 img = sitk.GetArrayFromImage(img).astype('float32')
                 img = np.squeeze(img)
@@ -236,7 +237,7 @@ class Dataset_(Dataset):
             # image = a['image']
             #image=np.transpose(image, (2, 0, 1))
             
-        return img,all_gts2#,self.images[index]
+        return all_imgs_in_folder,all_gts2#,self.images[index]
         #return image,self.images[index]
 
 
@@ -259,28 +260,9 @@ dir_ = r'E:/IAAA_CMMD/manifest-1616439774456/CMMD/'
 # images_folder = data_path / "CMMD"
 # clinical_path=r'E:/IAAA_CMMD/manifest-1616439774456/all_data.csv'
 
-loader=Data_Loader(dir_,train,2)
+loader=Data_Loader(dir_,train,6)
 a=iter(loader)
 a1=next(a)
 
 
 
-
-
-####
-
-
-def Data_Loader_V(df,images_folder,batch_size,num_workers=NUM_WORKERS,pin_memory=PIN_MEMORY):
-    test_ids = Dataset_V(df=df ,images_folder=images_folder)
-    data_loader = DataLoader(test_ids,batch_size=batch_size,num_workers=num_workers,pin_memory=pin_memory,shuffle=True)
-    return data_loader
-
-
-
-
-val_imgs = r'C:\My_Data\M2M Data\data\data_2/train'
-val_csv_path = r'C:\My_Data\M2M Data\data\train.csv'
-df_val = pd.read_csv(val_csv_path)
-
-
-train_loader = Data_Loader_V(df_val,val_imgs,batch_size = 1)
