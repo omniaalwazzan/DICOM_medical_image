@@ -61,73 +61,72 @@ train
 
 
 ###############
-ID_1 = train['ID1'].tolist()
-ID = train.iloc[:, 0].tolist()
-LR = train.iloc[:, 1].tolist()
+# ID_1 = train['ID1'].tolist()
+# ID = train.iloc[:, 0].tolist()
+# LR = train.iloc[:, 1].tolist()
 
-AGE = train.iloc[:, 2].tolist()
-ABN = train.iloc[:, 3].tolist()
+# AGE = train.iloc[:, 2].tolist()
+# ABN = train.iloc[:, 3].tolist()
 
-LABEL = train.iloc[:,4].tolist()
+# LABEL = train.iloc[:,4].tolist()
 
 
 all_gts2 = [] # this is for tow images inside a folder
 all_gts4 = [] # this is for four images inside a folder
 #all_gts = []
 all_imgs_in_folder  = []
-x= range(0, 23)
 
 
-start = time.time()
 
 ### 4 images condition
- 
+x= range(0, 23)
+
 #for j in range(len(ID)):
-for j in x:
-    #print('first index',j)
-    path1 = r'E:/IAAA_CMMD/manifest-1616439774456/CMMD/' + ID[j]
-    path2 = path1+ '/'+ next(os.walk(path1))[1][0]
-    path3 = path2+ '/'+ next(os.walk(path2))[1][0]
-    img_names = os.listdir(path3)
+# for j in x:
+#     #print('first index',j)
+#     path1 = r'E:/IAAA_CMMD/manifest-1616439774456/CMMD/' + ID[j]
+#     path2 = path1+ '/'+ next(os.walk(path1))[1][0]
+#     path3 = path2+ '/'+ next(os.walk(path2))[1][0]
+#     img_names = os.listdir(path3)
     
-    if len(img_names) ==2:
-        for i in range(len(img_names)):
-            img_path =  path3 + '/' + img_names[i]
-            img = sitk.ReadImage(img_path)
-            img = sitk.GetArrayFromImage(img).astype('float32')
-            img = np.squeeze(img)
-            all_imgs_in_folder.append(img)
+#     if len(img_names) ==2:
+#         for i in range(len(img_names)):
+#             img_path =  path3 + '/' + img_names[i]
+#             img = sitk.ReadImage(img_path)
+#             img = sitk.GetArrayFromImage(img).astype('float32')
+#             img = np.squeeze(img)
+#             all_imgs_in_folder.append(img)
             
-            gt1 = LABEL[j]
-            gt2 = LABEL[j]
-        all_gts2.append(gt1)
-        all_gts2.append(gt2)
+#             gt1 = LABEL[j]
+#             gt2 = LABEL[j]
+#         all_gts2.append(gt1)
+#         all_gts2.append(gt2)
         
         
-    else:
-        for i in range(len(img_names)):
-            #print(len(img_names))
-            img_path =  path3 + '/' + img_names[i]
-            img = sitk.ReadImage(img_path)
-            img = sitk.GetArrayFromImage(img).astype('float32')
-            img = np.squeeze(img)
-            all_imgs_in_folder.append(img)
+#     else:
+#         for i in range(len(img_names)):
+#             #print(len(img_names))
+#             img_path =  path3 + '/' + img_names[i]
+#             img = sitk.ReadImage(img_path)
+#             img = sitk.GetArrayFromImage(img).astype('float32')
+#             img = np.squeeze(img)
+#             all_imgs_in_folder.append(img)
             
-            gt1 = LABEL[j]
-            gt2 = LABEL[j]
-            gt3 = LABEL[j]
-            gt4 = LABEL[j]
-        all_gts4.append(gt1)
-        all_gts4.append(gt2)
-        all_gts4.append(gt3)
-        all_gts4.append(gt4)
+#             gt1 = LABEL[j]
+#             gt2 = LABEL[j]
+#             gt3 = LABEL[j]
+#             gt4 = LABEL[j]
+#         all_gts4.append(gt1)
+#         all_gts4.append(gt2)
+#         all_gts4.append(gt3)
+#         all_gts4.append(gt4)
         
-end = time.time()
-print('time spent to execuate',end - start)       
+# end = time.time()
+# print('time spent to execuate',end - start)       
             
 
 
-transform_1 =  transforms.Compose([transforms.ToTensor()])
+# transform_1 =  transforms.Compose([transforms.ToTensor()])
 
 def read_MRI(path, voi_lut = True, fix_monochrome = True):
     dicom = pydicom.read_file(path)
@@ -204,23 +203,23 @@ class Dataset_(Dataset):
             all_gts2.append(gt2)
             
             
-        # else:
-        #     for i in range(len(img_names)):
-        #         #print(len(img_names))
-        #         img_path =  path3 + '/' + img_names[i]
-        #         img = sitk.ReadImage(img_path)
-        #         img = sitk.GetArrayFromImage(img).astype('float32')
-        #         img = np.squeeze(img)
-        #         all_imgs_in_folder.append(img)
+        else:
+            for i in range(len(img_names)):
+                #print(len(img_names))
+                img_path =  img_path3 + '/' + img_names[i]
+                img = sitk.ReadImage(img_path)
+                img = sitk.GetArrayFromImage(img).astype('float32')
+                img = np.squeeze(img)
+                all_imgs_in_folder.append(img)
                 
-        #         gt1 = LABEL[j]
-        #         gt2 = LABEL[j]
-        #         gt3 = LABEL[j]
-        #         gt4 = LABEL[j]
-        #     all_gts4.append(gt1)
-        #     all_gts4.append(gt2)
-        #     all_gts4.append(gt3)
-        #     all_gts4.append(gt4)
+                gt1 = LABEL[index]
+                gt2 = LABEL[index]
+                gt3 = LABEL[index]
+                gt4 = LABEL[index]
+            all_gts4.append(gt1)
+            all_gts4.append(gt2)
+            all_gts4.append(gt3)
+            all_gts4.append(gt4)
 
         #img_path = os.path.join(self.image_dir, self.images[index])
         print(img_names)
@@ -259,10 +258,15 @@ dir_ = r'E:/IAAA_CMMD/manifest-1616439774456/CMMD/'
 # data_path = Path(r"E:\IAAA_CMMD\manifest-1616439774456")
 # images_folder = data_path / "CMMD"
 # clinical_path=r'E:/IAAA_CMMD/manifest-1616439774456/all_data.csv'
+start = time.time()
 
 loader=Data_Loader(dir_,train,6)
 a=iter(loader)
 a1=next(a)
+end = time.time()
+print('time spent to execuate',end - start)       
 
 
+
+####
 
