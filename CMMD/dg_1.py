@@ -262,7 +262,11 @@ start = time.time()
 
 loader=Data_Loader(dir_,train,6)
 a=iter(loader)
-a1=next(a)
+
+for i in range(12):
+    a1=next(a)
+    plt.figure()
+    plt.imshow(a1[0][0,0,:,:])
 end = time.time()
 print('time spent to execuate',end - start)       
 
