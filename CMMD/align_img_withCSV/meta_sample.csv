@@ -1,0 +1,6 @@
+﻿ID1,Number of Images,LeftRight,Age,number,abnormality,classification,subtype
+D1-0003,2,L,39,2,calcification,Benign,4
+D1-0002,2,L,40,2,calcification,Benign,4
+D1-0005,2,R,42,2,calcification,Benign,4
+D1-0004,2,L,41,2,calcification,Benign,4
+D1-0001,2,R,44,2,calcification,Benign,4
