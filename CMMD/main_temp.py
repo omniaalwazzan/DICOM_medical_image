@@ -3,7 +3,7 @@ meta_csv = r"D:/IAAA_CMMD/manifest-1616439774456/CMMD_all_meta/cmmd_all_merg_png
 
 PIN_MEMORY=True    
 NUM_WORKERS=0
-batch_size = 10
+batch_size = 32
 
 import os
 import pandas as pd
@@ -170,7 +170,7 @@ def train_model(model, device, train_loader,valid_loader,patience, optimizer,cri
     early_stopping = EarlyStopping(patience=patience, verbose=True)
     
     for epoch in range(1, n_epochs + 1):
-
+        print('Begin training epoch number:',epoch)
         ###################
         # train the model #
         ###################
@@ -195,6 +195,7 @@ def train_model(model, device, train_loader,valid_loader,patience, optimizer,cri
         ######################    
         # validate the model #
         ######################
+        print('Begin validating epoch number:',epoch)
         model.eval() # prep model for evaluation
         #for image_patch, gt,img_name in valid_loader:
         for  batch,(image_patch, gt,img_name) in enumerate(valid_loader,1):
@@ -317,6 +318,7 @@ for image_patch,gt,img_name in test_loader:
 ## ploting
 cm = confusion_matrix(truelabels, predictions)
 classes= ['Benign', 'Malignant']
+#classes= ['0']
 tick_marks = np.arange(len(classes))
 
 df_cm = pd.DataFrame(cm, index = classes, columns = classes)
